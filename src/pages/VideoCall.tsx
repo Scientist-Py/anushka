@@ -18,19 +18,19 @@ const VideoCall = () => {
 
   // Pricing logic
   const durationPrices: Record<string, number> = {
-    "10": 500,
-    "15": 750,
-    "25": 1200,
-    "30": 1500,
-    "45": 2200,
+    "10": 339,
+    "15": 399,
+    "25": 499,
+    "30": 599,
+    "45": 799,
   };
 
   const dressTypePrices: Record<string, number> = {
-    "Casual": 0,
-    "Formal": 200,
-    "Party": 300,
-    "Traditional": 400,
-    "Custom": 500,
+    "Stripping Black Saree": 0,
+    "Stripping Red Saree": 99,
+    "Bikni Stipping ": 149,
+    "Black Top Stipping": 199,
+    "Custom": 349,
   };
 
   const platformPrices: Record<string, number> = {
@@ -75,7 +75,7 @@ const VideoCall = () => {
         </Button>
 
         {/* Main Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium animate-fade-in">
+        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-3">Live Video Call</h1>
             <p className="text-muted-foreground">
@@ -181,11 +181,11 @@ const VideoCall = () => {
                   <SelectValue placeholder="Choose duration..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="10">10 minutes — ₹500</SelectItem>
-                  <SelectItem value="15">15 minutes — ₹750</SelectItem>
-                  <SelectItem value="25">25 minutes — ₹1,200</SelectItem>
-                  <SelectItem value="30">30 minutes — ₹1,500</SelectItem>
-                  <SelectItem value="45">45 minutes — ₹2,200</SelectItem>
+                  <SelectItem value="10">10 minutes — ₹339</SelectItem>
+                  <SelectItem value="15">15 minutes — ₹399</SelectItem>
+                  <SelectItem value="25">25 minutes — ₹499</SelectItem>
+                  <SelectItem value="30">30 minutes — ₹599</SelectItem>
+                  <SelectItem value="45">45 minutes — ₹799</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -200,18 +200,18 @@ const VideoCall = () => {
                   <SelectValue placeholder="Choose dress type..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Casual">Casual — ₹0</SelectItem>
-                  <SelectItem value="Formal">Formal — +₹200</SelectItem>
-                  <SelectItem value="Party">Party — +₹300</SelectItem>
-                  <SelectItem value="Traditional">Traditional — +₹400</SelectItem>
-                  <SelectItem value="Custom">Custom — +₹500</SelectItem>
+                  <SelectItem value="Stripping Black Saree">Stripping Black Saree — ₹0</SelectItem>
+                  <SelectItem value="Stripping Red Saree">Stripping Red Saree — +₹99</SelectItem>
+                  <SelectItem value="Bikni Stipping ">Bikni Stipping — +₹149</SelectItem>
+                  <SelectItem value="Black Top Stipping">Black Top Stipping — +₹199</SelectItem>
+                  <SelectItem value="Custom">Custom — +₹349</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Price Display */}
             {canConfirm && (
-              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mt-8 animate-fade-in">
+              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mt-8">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="w-5 h-5 text-primary" />
                   <span className="font-medium">Your Total</span>

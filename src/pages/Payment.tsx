@@ -1,19 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, AlertCircle, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import QRCode from "qrcode";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [qrCodeDataURL, setQrCodeDataURL] = useState<string>("");
 
   const { total, service, details } = location.state || {
     total: 0,
     service: "Consultation",
     details: "",
   };
+
+  // Generate QR code for UPI payment
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        const upiId = "ayushiraoo@ybl";
+        const upiString = `upi://pay?pa=${upiId}&am=${total}&cu=INR&tn=Video Call Payment`;
+        const qrCodeDataURL = await QRCode.toDataURL(upiString, {
+          width: 256,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        });
+        setQrCodeDataURL(qrCodeDataURL);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+
+    if (total > 0) {
+      generateQRCode();
+    }
+  }, [total]);
 
   const handlePayment = () => {
     if (agreedToTerms) {
@@ -35,7 +62,7 @@ const Payment = () => {
         </Button>
 
         {/* Main Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium animate-fade-in">
+        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium">
           {/* Order Summary */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Complete Payment</h1>
@@ -44,14 +71,44 @@ const Payment = () => {
 
           {/* Service Details */}
           <div className="bg-secondary/50 rounded-2xl p-6 mb-8">
-            <div className="text-sm text-muted-foreground mb-1">Service</div>
-            <div className="text-xl font-semibold mb-3">{service}</div>
-            <div className="text-sm text-muted-foreground">{details}</div>
-            <div className="mt-4 pt-4 border-t border-border">
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-medium">Total Amount</span>
-                <span className="text-3xl font-bold text-primary">₹{total.toLocaleString('en-IN')}</span>
+            <h3 className="text-lg font-semibold mb-4">Service Details</h3>
+            
+            {/* Service Type */}
+            <div className="flex items-center justify-between py-3 border-b border-border/50">
+              <span className="text-sm font-medium text-muted-foreground">Service Type</span>
+              <span className="text-sm font-semibold">{service}</span>
+            </div>
+            
+            {/* Platform */}
+            <div className="flex items-center justify-between py-3 border-b border-border/50">
+              <span className="text-sm font-medium text-muted-foreground">Platform</span>
+              <span className="text-sm font-semibold">{details.split(' • ')[0] || 'Website'}</span>
+            </div>
+            
+            {/* Duration */}
+            <div className="flex items-center justify-between py-3 border-b border-border/50">
+              <span className="text-sm font-medium text-muted-foreground">Duration</span>
+              <span className="text-sm font-semibold">{details.split(' • ')[1] || 'N/A'}</span>
+            </div>
+            
+            {/* Dress Type */}
+            <div className="flex items-center justify-between py-3 border-b border-border/50">
+              <span className="text-sm font-medium text-muted-foreground">Dress Type</span>
+              <span className="text-sm font-semibold">{details.split(' • ')[2] || 'N/A'}</span>
+            </div>
+            
+            {/* Additional Info (for recorded videos) */}
+            {details.includes('4K quality') && (
+              <div className="flex items-center justify-between py-3 border-b border-border/50">
+                <span className="text-sm font-medium text-muted-foreground">Bonus</span>
+                <span className="text-sm font-semibold text-primary">40 4K Quality Images</span>
               </div>
+            )}
+            
+            {/* Total Amount */}
+            <div className="flex items-center justify-between py-4 mt-4 bg-primary/5 rounded-xl px-4">
+              <span className="text-lg font-semibold">Total Amount</span>
+              <span className="text-3xl font-bold text-primary">₹{total.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
@@ -61,12 +118,23 @@ const Payment = () => {
               <QrCode className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Scan to Pay via UPI</h3>
-            <div className="w-64 h-64 mx-auto bg-gradient-to-br from-secondary/50 to-accent/50 rounded-2xl flex items-center justify-center mb-4">
-              <div className="text-center text-muted-foreground">
-                <QrCode className="w-32 h-32 mx-auto mb-2 opacity-30" />
-                <p className="text-sm">QR Code Placeholder</p>
-                <p className="text-xs mt-1">your-UPI-ID-here</p>
-              </div>
+            <div className="w-64 h-64 mx-auto bg-white rounded-2xl flex items-center justify-center mb-4 border border-border">
+              {qrCodeDataURL ? (
+                <img 
+                  src={qrCodeDataURL} 
+                  alt="UPI QR Code" 
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <QrCode className="w-32 h-32 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">Generating QR Code...</p>
+                </div>
+              )}
+            </div>
+            <div className="bg-primary/5 rounded-xl p-4 mb-4">
+              <p className="text-sm font-medium text-primary">UPI ID: ayushiraoo@ybl</p>
+              <p className="text-lg font-bold text-primary">Amount: ₹{total.toLocaleString('en-IN')}</p>
             </div>
             <p className="text-sm text-muted-foreground">
               Use any UPI app to scan and complete payment

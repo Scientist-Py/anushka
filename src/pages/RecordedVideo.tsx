@@ -13,17 +13,33 @@ import {
 const RecordedVideo = () => {
   const navigate = useNavigate();
   const [duration, setDuration] = useState("");
+  const [dressType, setDressType] = useState("");
 
   // Pricing logic
   const durationPrices: Record<string, number> = {
-    "25": 1800,
-    "35": 2500,
-    "45": 3200,
+    "25": 579,
+    "35": 789,
+    "45": 999,
   };
 
-  const total = durationPrices[duration] || 0;
-  const canConfirm = duration !== "";
+  const dressTypePrices: Record<string, number> = {
+    "Stripping Black Saree": 0,
+    "Stripping Red Saree": 99,
+    "Bikni Stipping ": 149,
+    "Black Top Stipping": 199,
+    "Custom": 349,
+  };
+
+  const calculateTotal = () => {
+    const durationPrice = durationPrices[duration] || 0;
+    const dressPrice = dressTypePrices[dressType] || 0;
+    return durationPrice + dressPrice;
+  };
+
+  const total = calculateTotal();
+  const canConfirm = duration !== "" && dressType !== "";
   const includesPhotos = duration === "45";
+  const includes4KImages = duration === "45";
 
   const handleConfirm = () => {
     if (canConfirm) {
@@ -31,7 +47,7 @@ const RecordedVideo = () => {
         state: { 
           total, 
           service: "Recorded Video Session",
-          details: `${duration} min video${includesPhotos ? ' • 30 photos included' : ''}`
+          details: `${duration} min video • ${dressType}${includes4KImages ? ' • 40 4K quality nude images Free' : ''}`
         } 
       });
     }
@@ -51,7 +67,7 @@ const RecordedVideo = () => {
         </Button>
 
         {/* Main Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium animate-fade-in">
+        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-3">Recorded Video Session</h1>
             <p className="text-muted-foreground">
@@ -70,16 +86,35 @@ const RecordedVideo = () => {
                   <SelectValue placeholder="Choose duration..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="25">25 minutes — ₹1,800</SelectItem>
-                  <SelectItem value="35">35 minutes — ₹2,500</SelectItem>
-                  <SelectItem value="45">45 minutes — ₹3,200</SelectItem>
+                  <SelectItem value="25">25 minutes — ₹579</SelectItem>
+                  <SelectItem value="35">35 minutes — ₹789</SelectItem>
+                  <SelectItem value="45">45 minutes — ₹999 🔥 OFFER</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Bonus Photos Notice */}
-            {includesPhotos && (
-              <div className="bg-accent/50 border border-accent rounded-2xl p-5 animate-fade-in">
+            {/* Dress Type Dropdown */}
+            <div>
+              <label className="block text-sm font-medium mb-3">
+                Select Dress Type
+              </label>
+              <Select value={dressType} onValueChange={setDressType}>
+                <SelectTrigger className="w-full h-12 rounded-xl">
+                  <SelectValue placeholder="Choose dress type..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Stripping Black Saree">Stripping Black Saree — ₹0</SelectItem>
+                  <SelectItem value="Stripping Red Saree">Stripping Red Saree — +₹99</SelectItem>
+                  <SelectItem value="Bikni Stipping ">Bikni Stipping — +₹149</SelectItem>
+                  <SelectItem value="Black Top Stipping">Black Top Stipping — +₹199</SelectItem>
+                  <SelectItem value="Custom">Custom — +₹349</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Bonus 4K Images Notice */}
+            {includes4KImages && (
+              <div className="bg-accent/50 border border-accent rounded-2xl p-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Camera className="w-5 h-5 text-primary" />
@@ -87,7 +122,7 @@ const RecordedVideo = () => {
                   <div>
                     <div className="font-semibold">Bonus Included!</div>
                     <div className="text-sm text-muted-foreground">
-                      Includes 30 professional photos 📸
+                      Includes <span className="font-bold text-black">40</span> 4K quality Nude images 📸
                     </div>
                   </div>
                 </div>
@@ -96,7 +131,7 @@ const RecordedVideo = () => {
 
             {/* Price Display */}
             {canConfirm && (
-              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mt-8 animate-fade-in">
+              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mt-8">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="w-5 h-5 text-primary" />
                   <span className="font-medium">Your Total</span>
@@ -105,7 +140,7 @@ const RecordedVideo = () => {
                   ₹{total.toLocaleString('en-IN')}
                 </div>
                 <div className="text-sm text-muted-foreground mt-2">
-                  {duration} min recorded video session{includesPhotos ? ' + 30 photos' : ''}
+                  {duration} min recorded video • {dressType}{includes4KImages ? ' + 40 4K images' : ''}
                 </div>
               </div>
             )}

@@ -7,35 +7,28 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background flex items-center justify-center p-4">
       <div className="max-w-5xl w-full">
         {/* Header */}
-        <div className="text-center mb-16 animate-fade-in">
+        <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-primary to-blue-500 bg-clip-text text-transparent">
-            Professional Consulting Services
+            SHANAYA VIDEO CALLS
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Choose the perfect consultation format for your needs
-          </p>
           
-          {/* Clear Explainer */}
-          <div className="max-w-3xl mx-auto mb-12">
-            <div className="glass-card rounded-2xl p-6 space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Video className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Video Call = Live Session</h3>
-                  <p className="text-sm text-muted-foreground">Talk to us in real-time via your chosen platform (Website, Telegram, or WhatsApp)</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Film className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Recorded Video = Pre-made for You</h3>
-                  <p className="text-sm text-muted-foreground">We create a custom video just for you — watch it anytime, no live call needed</p>
-                </div>
-              </div>
+          {/* Circular Video */}
+          <div className="max-w-3xl mx-auto mb-12 flex justify-center">
+            <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-primary/20">
+              <video 
+                src="/Images/shanayavideo.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="w-full h-full object-cover"
+                style={{ 
+                  objectPosition: 'center',
+                  transform: 'scale(1.2)',
+                  minWidth: '100%',
+                  minHeight: '100%'
+                }}
+              />
             </div>
           </div>
         </div>
