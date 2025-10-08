@@ -43,7 +43,8 @@ const Index = () => {
               </div>
               <h2 className="text-2xl font-bold mb-3">Live Video Call</h2>
               <p className="text-muted-foreground mb-6">
-                Real-time consultation — talk to us live on your preferred platform
+                Only Nude Video Calls 
+                 
               </p>
               <div className="space-y-2 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">
@@ -73,7 +74,7 @@ const Index = () => {
               </div>
               <h2 className="text-2xl font-bold mb-3">Custom Recorded Video</h2>
               <p className="text-muted-foreground mb-6">
-                We make a video just for you — no live call, watch whenever you want
+                You Will Get Nude Recorded Videos In 4k Quality
               </p>
               <div className="space-y-2 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">
