@@ -16,7 +16,7 @@ const Index = () => {
           <div className="max-w-3xl mx-auto mb-12 flex justify-center">
             <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-primary/20">
               <video 
-                src="/Images/shanayavideo.mp4" 
+                src="/shanayavideo.mp4" 
                 autoPlay 
                 loop 
                 muted 
