@@ -33,10 +33,17 @@ const VideoCall = () => {
     "Custom": 500,
   };
 
+  const platformPrices: Record<string, number> = {
+    "Website": 0,
+    "Telegram": 0,
+    "WhatsApp": 150,
+  };
+
   const calculateTotal = () => {
     const durationPrice = durationPrices[duration] || 0;
     const dressPrice = dressTypePrices[dressType] || 0;
-    return durationPrice + dressPrice;
+    const platformPrice = platformPrices[platform] || 0;
+    return durationPrice + dressPrice + platformPrice;
   };
 
   const total = calculateTotal();
@@ -82,7 +89,10 @@ const VideoCall = () => {
             <p className="text-sm text-muted-foreground">
               <strong>Website:</strong> Video call directly on our platform (private) <br/>
               <strong>Telegram:</strong> Call via Telegram (username only) <br/>
-              <strong>WhatsApp:</strong> Call via WhatsApp (shares your phone number)
+              <strong>WhatsApp:</strong> Call via WhatsApp (shares your phone number) — <strong className="text-primary">+₹150</strong>
+            </p>
+            <p className="text-xs text-destructive mt-3 font-medium">
+              ⚠️ Number is confidential. If found spamming on WhatsApp, you will be blocked directly.
             </p>
           </div>
 
@@ -153,7 +163,7 @@ const VideoCall = () => {
                       <Phone className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="font-semibold">WhatsApp</div>
+                      <div className="font-semibold">WhatsApp <span className="text-primary text-xs">+₹150</span></div>
                       <div className="text-xs text-muted-foreground">⚠️ Shares your phone number</div>
                     </div>
                   </div>
