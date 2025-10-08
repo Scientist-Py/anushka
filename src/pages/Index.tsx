@@ -11,9 +11,33 @@ const Index = () => {
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-primary to-blue-500 bg-clip-text text-transparent">
             Professional Consulting Services
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the perfect consultation format for your needs — live video call or recorded video session
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
+            Choose the perfect consultation format for your needs
           </p>
+          
+          {/* Clear Explainer */}
+          <div className="max-w-3xl mx-auto mb-12">
+            <div className="glass-card rounded-2xl p-6 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Video className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Video Call = Live Session</h3>
+                  <p className="text-sm text-muted-foreground">Talk to us in real-time via your chosen platform (Website, Telegram, or WhatsApp)</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Film className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Recorded Video = Pre-made for You</h3>
+                  <p className="text-sm text-muted-foreground">We create a custom video just for you — watch it anytime, no live call needed</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Service Cards */}
@@ -24,22 +48,22 @@ const Index = () => {
               <div className="bg-gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-smooth">
                 <Video className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-3">Video Call Consultation</h2>
+              <h2 className="text-2xl font-bold mb-3">Live Video Call</h2>
               <p className="text-muted-foreground mb-6">
-                Get personalized advice in real-time with live one-on-one video consultation sessions
+                Real-time consultation — talk to us live on your preferred platform
               </p>
               <div className="space-y-2 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
-                  <span>Multiple duration options</span>
+                  <span>Choose: Website, Telegram, or WhatsApp</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
-                  <span>Category-specific pricing</span>
+                  <span>10 to 45 minute sessions</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
-                  <span>Instant scheduling</span>
+                  <span>Different dress categories available</span>
                 </div>
               </div>
               <Button className="w-full" size="lg">
@@ -54,9 +78,9 @@ const Index = () => {
               <div className="bg-gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-smooth">
                 <Film className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-3">Recorded Video Session</h2>
+              <h2 className="text-2xl font-bold mb-3">Custom Recorded Video</h2>
               <p className="text-muted-foreground mb-6">
-                Receive a professionally recorded consultation video tailored to your requirements
+                We make a video just for you — no live call, watch whenever you want
               </p>
               <div className="space-y-2 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">

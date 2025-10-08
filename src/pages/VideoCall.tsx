@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Globe, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -12,6 +12,7 @@ import {
 
 const VideoCall = () => {
   const navigate = useNavigate();
+  const [platform, setPlatform] = useState("");
   const [duration, setDuration] = useState("");
   const [dressType, setDressType] = useState("");
 
@@ -39,15 +40,15 @@ const VideoCall = () => {
   };
 
   const total = calculateTotal();
-  const canConfirm = duration && dressType;
+  const canConfirm = platform && duration && dressType;
 
   const handleConfirm = () => {
     if (canConfirm) {
       navigate("/payment", { 
         state: { 
           total, 
-          service: "Video Call Consultation",
-          details: `${duration} min • ${dressType}`
+          service: "Live Video Call",
+          details: `${platform} • ${duration} min • ${dressType}`
         } 
       });
     }
@@ -69,13 +70,97 @@ const VideoCall = () => {
         {/* Main Card */}
         <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium animate-fade-in">
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Video Call Consultation</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">Live Video Call</h1>
             <p className="text-muted-foreground">
-              Select your preferred duration and consultation type
+              Choose your platform, duration, and consultation type
+            </p>
+          </div>
+          
+          {/* Platform Info Box */}
+          <div className="bg-accent/50 border border-accent rounded-2xl p-5 mb-8">
+            <h3 className="font-semibold mb-2">📱 Choose Your Platform</h3>
+            <p className="text-sm text-muted-foreground">
+              <strong>Website:</strong> Video call directly on our platform (private) <br/>
+              <strong>Telegram:</strong> Call via Telegram (username only) <br/>
+              <strong>WhatsApp:</strong> Call via WhatsApp (shares your phone number)
             </p>
           </div>
 
           <div className="space-y-6">
+            {/* Platform Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-3">
+                Select Platform (Where to do the call?)
+              </label>
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPlatform("Website")}
+                  className={`p-4 rounded-xl border-2 text-left transition-smooth ${
+                    platform === "Website"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      platform === "Website" ? "bg-primary text-white" : "bg-secondary"
+                    }`}>
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">Website</div>
+                      <div className="text-xs text-muted-foreground">Most private — no contact details shared</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setPlatform("Telegram")}
+                  className={`p-4 rounded-xl border-2 text-left transition-smooth ${
+                    platform === "Telegram"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      platform === "Telegram" ? "bg-primary text-white" : "bg-secondary"
+                    }`}>
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">Telegram</div>
+                      <div className="text-xs text-muted-foreground">Semi-private — username only</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setPlatform("WhatsApp")}
+                  className={`p-4 rounded-xl border-2 text-left transition-smooth ${
+                    platform === "WhatsApp"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      platform === "WhatsApp" ? "bg-primary text-white" : "bg-secondary"
+                    }`}>
+                      <Phone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">WhatsApp</div>
+                      <div className="text-xs text-muted-foreground">⚠️ Shares your phone number</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+            
             {/* Duration Dropdown */}
             <div>
               <label className="block text-sm font-medium mb-3">
@@ -125,7 +210,7 @@ const VideoCall = () => {
                   ₹{total.toLocaleString('en-IN')}
                 </div>
                 <div className="text-sm text-muted-foreground mt-2">
-                  {duration} min consultation • {dressType} dress type
+                  {platform} • {duration} min • {dressType} dress type
                 </div>
               </div>
             )}
