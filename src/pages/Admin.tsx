@@ -28,6 +28,7 @@ import {
     Area
 } from "recharts";
 import { getChats, addChat, formatTimeAgo, ChatMessage } from "@/lib/chatUtils";
+import { getReviews, addReview, Review } from "@/lib/reviewUtils";
 
 const Admin = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,6 +48,12 @@ const Admin = () => {
     const [chatUser, setChatUser] = useState("Anonymous");
     const [isPostAsAdmin, setIsPostAsAdmin] = useState(true);
 
+    // Review State
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [reviewName, setReviewName] = useState("");
+    const [reviewText, setReviewText] = useState("");
+    const [reviewRating, setReviewRating] = useState(5);
+
     useEffect(() => {
         // Read real stats from localStorage
         const savedLeads = JSON.parse(localStorage.getItem("anushka_leads") || "[]");
@@ -57,6 +64,7 @@ const Admin = () => {
         setVisitors(savedVisitors);
         setRevenue(savedRevenue);
         setChats(getChats());
+        setReviews(getReviews());
     }, []);
 
     const handlePostChat = (e: React.FormEvent) => {
@@ -66,6 +74,17 @@ const Admin = () => {
         const updated = addChat(isPostAsAdmin ? "Admin" : chatUser, chatMsg, isPostAsAdmin);
         setChats(updated);
         setChatMsg("");
+    };
+
+    const handleAddReview = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!reviewName || !reviewText) return;
+
+        const updated = addReview(reviewName, reviewRating, reviewText);
+        setReviews(updated);
+        setReviewName("");
+        setReviewText("");
+        setReviewRating(5);
     };
 
     // Mock data for graphs (trends based on real total)
@@ -104,33 +123,33 @@ const Admin = () => {
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center p-4">
-                <div className="glass-card w-full max-w-md p-8 rounded-3xl border border-primary/20 bg-black/40 backdrop-blur-xl">
+                <div className="glass-card w-full max-w-md p-8 rounded-3xl border border-primary/20 bg-zinc-900/40 backdrop-blur-xl">
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-primary mb-2">Admin Panel</h1>
-                        <p className="text-muted-foreground">Secure Access for Anushka Midnight</p>
+                        <p className="text-zinc-400">Secure Access for Anushka Midnight</p>
                     </div>
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium ml-1">Username</label>
+                            <label className="text-sm font-medium ml-1 text-zinc-300">Username</label>
                             <Input
                                 type="text"
                                 placeholder="Enter username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="bg-white/5 border-primary/20 h-12 rounded-xl focus:border-primary"
+                                className="bg-zinc-800 border-zinc-700 h-12 rounded-xl focus:border-primary text-white placeholder:text-zinc-500"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium ml-1">Password</label>
+                            <label className="text-sm font-medium ml-1 text-zinc-300">Password</label>
                             <Input
                                 type="password"
                                 placeholder="Enter password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="bg-white/5 border-primary/20 h-12 rounded-xl focus:border-primary"
+                                className="bg-zinc-800 border-zinc-700 h-12 rounded-xl focus:border-primary text-white placeholder:text-zinc-500"
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
+                        {error && <p className="text-red-400 text-sm text-center font-medium">{error}</p>}
                         <Button type="submit" className="w-full h-12 text-lg font-bold" variant="gradient">
                             Log In
                         </Button>
@@ -143,24 +162,27 @@ const Admin = () => {
     return (
         <div className="min-h-screen bg-[#050505] text-white flex">
             {/* Sidebar */}
-            <div className="w-64 border-r border-white/5 bg-[#0a0a0a] p-6 hidden md:flex flex-col gap-8 fixed h-full z-10">
-                <div className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <div className="w-64 border-r border-zinc-800 bg-[#0a0a0a] p-6 hidden md:flex flex-col gap-8 fixed h-full z-10">
+                <div className="text-xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
                     ANUSHKA ADMIN
                 </div>
                 <nav className="space-y-2 flex-grow">
-                    <Button onClick={() => scrollToSection('dashboard')} variant="ghost" className="w-full justify-start gap-3 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary">
+                    <Button onClick={() => scrollToSection('dashboard')} variant="ghost" className="w-full justify-start gap-3 bg-zinc-900/50 text-white font-medium hover:bg-primary/20 hover:text-primary">
                         <BarChart3 className="w-5 h-5" /> Dashboard
                     </Button>
-                    <Button onClick={() => scrollToSection('users')} variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-white hover:bg-white/5">
+                    <Button onClick={() => scrollToSection('users')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <Users className="w-5 h-5" /> All Users
                     </Button>
-                    <Button onClick={() => scrollToSection('payments')} variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-white hover:bg-white/5">
+                    <Button onClick={() => scrollToSection('payments')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <DollarSign className="w-5 h-5" /> Payments
                     </Button>
-                    <Button onClick={() => scrollToSection('chat-control')} variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-white hover:bg-white/5">
+                    <Button onClick={() => scrollToSection('chat-control')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <MessageSquare className="w-5 h-5" /> Live Chat
                     </Button>
-                    <Button onClick={() => scrollToSection('settings')} variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-white hover:bg-white/5">
+                    <Button onClick={() => scrollToSection('reviews-control')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
+                        <Users className="w-5 h-5" /> Reviews
+                    </Button>
+                    <Button onClick={() => scrollToSection('settings')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <Settings className="w-5 h-5" /> Settings
                     </Button>
                 </nav>
@@ -174,8 +196,8 @@ const Admin = () => {
                 {/* Header */}
                 <div id="dashboard" className="flex justify-between items-center mb-10 pt-4">
                     <div>
-                        <h1 className="text-3xl font-bold">Business Overview 👑</h1>
-                        <p className="text-muted-foreground">Monitoring real-time user activity and revenue.</p>
+                        <h1 className="text-3xl font-bold text-white">Business Overview 👑</h1>
+                        <p className="text-zinc-400">Monitoring real-time user activity and revenue.</p>
                     </div>
                     <div className="hidden sm:flex items-center gap-4">
                         <div className="bg-green-500/10 text-green-500 px-4 py-2 rounded-full border border-green-500/20 text-sm font-semibold flex items-center gap-2">
@@ -187,34 +209,34 @@ const Admin = () => {
 
                 {/* Top Stats */}
                 <div id="stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all group bg-zinc-900/50">
+                    <div className="glass-card p-6 rounded-2xl border border-zinc-800 hover:border-primary/50 transition-all group bg-zinc-900">
                         <div className="flex justify-between items-start mb-4">
                             <div className="bg-primary/20 p-3 rounded-xl"><Users className="text-primary" /></div>
-                            <div className="text-green-500 text-xs flex items-center gap-1"><TrendingUp size={14} /> Live</div>
+                            <div className="text-green-400 text-xs flex items-center gap-1 font-bold"><TrendingUp size={14} /> Live</div>
                         </div>
                         <div className="text-3xl font-bold mb-1 text-white">{visitors.toLocaleString()}</div>
-                        <p className="text-muted-foreground text-sm">Real Total Visits</p>
+                        <p className="text-zinc-400 text-sm">Real Total Visits</p>
                     </div>
-                    <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-blue-500/30 transition-all group bg-zinc-900/50">
+                    <div className="glass-card p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/50 transition-all group bg-zinc-900">
                         <div className="flex justify-between items-start mb-4">
                             <div className="bg-blue-500/20 p-3 rounded-xl"><UserIcon className="text-blue-500" /></div>
                         </div>
                         <div className="text-3xl font-bold mb-1 text-white">{leads.length}</div>
-                        <p className="text-muted-foreground text-sm">Leads Captured</p>
+                        <p className="text-zinc-400 text-sm">Leads Captured</p>
                     </div>
-                    <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-green-500/30 transition-all group bg-zinc-900/50">
+                    <div className="glass-card p-6 rounded-2xl border border-zinc-800 hover:border-green-500/50 transition-all group bg-zinc-900">
                         <div className="flex justify-between items-start mb-4">
                             <div className="bg-green-500/20 p-3 rounded-xl"><DollarSign className="text-green-500" /></div>
                         </div>
                         <div className="text-3xl font-bold mb-1 text-white">₹{revenue.toLocaleString()}</div>
-                        <p className="text-muted-foreground text-sm">Recorded Revenue</p>
+                        <p className="text-zinc-400 text-sm">Recorded Revenue</p>
                     </div>
-                    <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-all group bg-zinc-900/50">
+                    <div className="glass-card p-6 rounded-2xl border border-zinc-800 hover:border-purple-500/50 transition-all group bg-zinc-900">
                         <div className="flex justify-between items-start mb-4">
                             <div className="bg-purple-500/20 p-3 rounded-xl"><Phone className="text-purple-500" /></div>
                         </div>
                         <div className="text-3xl font-bold mb-1 text-white">Active</div>
-                        <p className="text-muted-foreground text-sm">Tracking On</p>
+                        <p className="text-zinc-400 text-sm">Tracking On</p>
                     </div>
                 </div>
 
@@ -268,41 +290,41 @@ const Admin = () => {
                 </div>
 
                 {/* User Table */}
-                <div id="users" className="glass-card rounded-3xl border border-white/5 overflow-hidden bg-zinc-900/50 mb-10">
-                    <div className="p-8 border-b border-white/5 flex justify-between items-center">
+                <div id="users" className="glass-card rounded-3xl border border-zinc-800 overflow-hidden bg-zinc-900 mb-10">
+                    <div className="p-8 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
                         <div>
-                            <h3 className="text-xl font-bold">User Access Logs & Leads 📧</h3>
-                            <p className="text-muted-foreground text-sm">List of all users who have entered their details.</p>
+                            <h3 className="text-xl font-bold text-white">User Access Logs & Leads 📧</h3>
+                            <p className="text-zinc-400 text-sm">List of all users who have entered their details.</p>
                         </div>
-                        <Button variant="outline" size="sm" className="border-white/10 text-xs">
+                        <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300 text-xs hover:bg-zinc-800">
                             Export CSV
                         </Button>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-white/[0.05] border-b border-white/10">
-                                    <th className="text-left p-4 pl-8 text-sm font-bold text-gray-300">USER NAME</th>
-                                    <th className="text-left p-4 text-sm font-bold text-gray-300">PHONE NUMBER</th>
-                                    <th className="text-left p-4 text-sm font-bold text-gray-300">ACCESS TIME</th>
-                                    <th className="text-right p-4 pr-8 text-sm font-bold text-gray-300">STATUS</th>
+                                <tr className="bg-zinc-950 border-b border-zinc-800">
+                                    <th className="text-left p-4 pl-8 text-sm font-bold text-zinc-300">USER NAME</th>
+                                    <th className="text-left p-4 text-sm font-bold text-zinc-300">PHONE NUMBER</th>
+                                    <th className="text-left p-4 text-sm font-bold text-zinc-300">ACCESS TIME</th>
+                                    <th className="text-right p-4 pr-8 text-sm font-bold text-zinc-300">STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {leads.length > 0 ? leads.map((lead, i) => (
-                                    <tr key={i} className="border-b border-white/5 hover:bg-white/[0.05] transition-colors">
+                                    <tr key={i} className="border-b border-zinc-800 hover:bg-zinc-800/50 transition-colors">
                                         <td className="p-4 pl-8 font-bold text-white max-w-[200px] truncate">{lead.name}</td>
-                                        <td className="p-4 font-mono text-blue-400">{lead.phone}</td>
-                                        <td className="p-4 text-sm text-gray-400">{lead.time}</td>
+                                        <td className="p-4 font-mono text-blue-400 font-medium">{lead.phone}</td>
+                                        <td className="p-4 text-sm text-zinc-400">{lead.time}</td>
                                         <td className="p-4 pr-8 text-right">
-                                            <span className="bg-green-500/20 text-green-400 text-[10px] uppercase font-bold px-3 py-1 rounded-full border border-green-500/20">
+                                            <span className="bg-green-500/10 text-green-400 text-[10px] uppercase font-bold px-3 py-1 rounded-full border border-green-500/20">
                                                 Verified Lead
                                             </span>
                                         </td>
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={4} className="p-12 text-center text-muted-foreground">
+                                        <td colSpan={4} className="p-12 text-center text-zinc-500">
                                             <div className="flex flex-col items-center gap-2">
                                                 <Users className="w-8 h-8 opacity-20" />
                                                 <p>No user data captured yet.</p>
@@ -318,26 +340,26 @@ const Admin = () => {
                 {/* Chat Management Section */}
                 <div id="chat-control" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
                     {/* Chat List */}
-                    <div className="glass-card rounded-3xl border border-white/5 overflow-hidden flex flex-col h-[600px] bg-zinc-900/50">
-                        <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                    <div className="glass-card rounded-3xl border border-zinc-800 overflow-hidden flex flex-col h-[600px] bg-zinc-900">
+                        <div className="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
                             <div>
-                                <h3 className="text-xl font-bold flex items-center gap-2"><MessageSquare className="text-primary" /> Live Chat Feed</h3>
-                                <p className="text-muted-foreground text-xs">Real-time public messages.</p>
+                                <h3 className="text-xl font-bold flex items-center gap-2 text-white"><MessageSquare className="text-primary" /> Live Chat Feed</h3>
+                                <p className="text-zinc-400 text-xs">Real-time public messages.</p>
                             </div>
-                            <span className="text-xs font-mono text-muted-foreground bg-white/5 px-2 py-1 rounded">{chats.length} messages</span>
+                            <span className="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-1 rounded">{chats.length} messages</span>
                         </div>
-                        <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-black/20">
+                        <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-black/40">
                             {chats.map((chat) => (
-                                <div key={chat.id} className={`flex gap-3 text-sm p-3 rounded-xl border ${chat.user === 'Admin' ? 'bg-primary/5 border-primary/20' : 'bg-white/5 border-white/5'}`}>
+                                <div key={chat.id} className={`flex gap-3 text-sm p-3 rounded-xl border ${chat.user === 'Admin' ? 'bg-primary/10 border-primary/20' : 'bg-zinc-800/50 border-zinc-800'}`}>
                                     <div className="flex-grow">
                                         <div className="flex justify-between items-start mb-1">
-                                            <span className={`font-bold ${chat.user === 'Admin' ? 'text-primary' : 'text-zinc-300'}`}>
+                                            <span className={`font-bold ${chat.user === 'Admin' ? 'text-primary' : 'text-zinc-200'}`}>
                                                 {chat.user}
                                                 {chat.user === 'Admin' && <span className="ml-2 text-[10px] bg-primary text-white px-1 rounded">MOD</span>}
                                             </span>
-                                            <span className="text-[10px] text-muted-foreground">{formatTimeAgo(chat.timestamp)}</span>
+                                            <span className="text-[10px] text-zinc-500">{formatTimeAgo(chat.timestamp)}</span>
                                         </div>
-                                        <p className="text-muted-foreground text-sm">{chat.message}</p>
+                                        <p className="text-zinc-300 text-sm">{chat.message}</p>
                                     </div>
                                 </div>
                             ))}
@@ -345,8 +367,8 @@ const Admin = () => {
                     </div>
 
                     {/* Chat Control */}
-                    <div className="glass-card rounded-3xl border border-white/5 p-8 h-fit">
-                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Send className="text-green-500" /> Post Message</h3>
+                    <div className="glass-card rounded-3xl border border-zinc-800 p-8 h-fit bg-zinc-900">
+                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white"><Send className="text-green-500" /> Post Message</h3>
 
                         <form onSubmit={handlePostChat} className="space-y-6">
                             {/* Identity Selector */}
@@ -354,17 +376,17 @@ const Admin = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsPostAsAdmin(true)}
-                                    className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${isPostAsAdmin ? 'bg-primary/20 border-primary text-primary' : 'bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10'}`}
+                                    className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${isPostAsAdmin ? 'bg-primary/20 border-primary text-primary' : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700'}`}
                                 >
-                                    <div className={`w-4 h-4 rounded-full border-2 ${isPostAsAdmin ? 'border-primary bg-primary' : 'border-muted-foreground'}`}></div>
+                                    <div className={`w-4 h-4 rounded-full border-2 ${isPostAsAdmin ? 'border-primary bg-primary' : 'border-zinc-500'}`}></div>
                                     <span className="font-bold text-sm">Post as Admin</span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsPostAsAdmin(false)}
-                                    className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${!isPostAsAdmin ? 'bg-blue-500/20 border-blue-500 text-blue-500' : 'bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10'}`}
+                                    className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${!isPostAsAdmin ? 'bg-blue-500/20 border-blue-500 text-blue-500' : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700'}`}
                                 >
-                                    <div className={`w-4 h-4 rounded-full border-2 ${!isPostAsAdmin ? 'border-blue-500 bg-blue-500' : 'border-muted-foreground'}`}></div>
+                                    <div className={`w-4 h-4 rounded-full border-2 ${!isPostAsAdmin ? 'border-blue-500 bg-blue-500' : 'border-zinc-500'}`}></div>
                                     <span className="font-bold text-sm">Post as User</span>
                                 </button>
                             </div>
@@ -377,15 +399,15 @@ const Admin = () => {
                                         placeholder="e.g. Rahul_King"
                                         value={chatUser}
                                         onChange={(e) => setChatUser(e.target.value)}
-                                        className="bg-black/60 border-blue-500/30 h-14 rounded-xl focus:border-blue-500 text-lg font-bold text-white placeholder:text-white/20"
+                                        className="bg-zinc-800 border-blue-500/50 h-14 rounded-xl focus:border-blue-500 text-lg font-bold text-white placeholder:text-zinc-500"
                                     />
                                 </div>
                             )}
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium ml-1 text-muted-foreground">Message Content</label>
+                                <label className="text-sm font-medium ml-1 text-zinc-400">Message Content</label>
                                 <textarea
-                                    className="w-full h-32 bg-black/60 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary focus:outline-none resize-none text-lg"
+                                    className="w-full h-32 bg-zinc-800 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:border-primary focus:outline-none resize-none text-lg"
                                     placeholder="Type your message here..."
                                     value={chatMsg}
                                     onChange={(e) => setChatMsg(e.target.value)}
@@ -396,9 +418,112 @@ const Admin = () => {
                                 <Send className="w-5 h-5 mr-2" /> Send Message
                             </Button>
                         </form>
+                    </div>
+                </div>
 
-                        <div className="mt-8 p-4 bg-yellow-500/5 border border-yellow-500/10 rounded-xl text-xs text-yellow-500/80 leading-relaxed">
-                            <strong>System Note:</strong> 1-2 automated messages are added every 4 hours to keep the chat looking active.
+                {/* Review Management Section */}
+                <div id="reviews-control" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+                    {/* Add Review Form */}
+                    <div className="glass-card rounded-3xl border border-zinc-800 p-8 h-fit bg-zinc-900">
+                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white"><ArrowUpRight className="text-yellow-500" /> Add Client Review</h3>
+                        <form onSubmit={handleAddReview} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium ml-1 text-zinc-400">Client Name</label>
+                                <Input
+                                    placeholder="e.g. Rahul Sharma"
+                                    value={reviewName}
+                                    onChange={(e) => setReviewName(e.target.value)}
+                                    className="bg-zinc-800 border-zinc-700 h-12 rounded-xl focus:border-yellow-500 text-white placeholder:text-zinc-500"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium ml-1 text-zinc-400">Rating (1-5)</label>
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    value={reviewRating}
+                                    onChange={(e) => setReviewRating(parseInt(e.target.value))}
+                                    className="bg-zinc-800 border-zinc-700 h-12 rounded-xl focus:border-yellow-500 text-white placeholder:text-zinc-500"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium ml-1 text-zinc-400">Review Text</label>
+                                <textarea
+                                    className="w-full h-32 bg-zinc-800 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:border-yellow-500 focus:outline-none resize-none text-base"
+                                    placeholder="Write the review here..."
+                                    value={reviewText}
+                                    onChange={(e) => setReviewText(e.target.value)}
+                                />
+                            </div>
+                            <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-yellow-500/20 text-black hover:bg-yellow-400" style={{ backgroundColor: '#eab308' }}>
+                                Post Review
+                            </Button>
+                        </form>
+                    </div>
+
+                    {/* Review List */}
+                    <div className="glass-card rounded-3xl border border-zinc-800 overflow-hidden flex flex-col h-[600px] bg-zinc-900">
+                        <div className="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+                            <div>
+                                <h3 className="text-xl font-bold flex items-center gap-2 text-white">User Reviews</h3>
+                                <p className="text-zinc-400 text-xs">Live on website.</p>
+                            </div>
+                            <span className="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-1 rounded">{reviews.length} reviews</span>
+                        </div>
+                        <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-black/40">
+                            {reviews.map((review) => (
+                                <div key={review.id} className="bg-zinc-800/40 border border-zinc-800 p-4 rounded-xl">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div className="font-bold text-white">{review.name}</div>
+                                        <div className="text-yellow-500 text-xs text-right">
+                                            {"★".repeat(review.rating)}
+                                        </div>
+                                    </div>
+                                    <p className="text-zinc-300 text-sm italic">"{review.text}"</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Settings Section */}
+                <div id="settings" className="glass-card rounded-3xl border border-zinc-800 p-8 bg-zinc-900 mb-10">
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white"><Settings className="text-zinc-400" /> Platform Settings</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 className="font-bold text-white mb-4">Data Management</h4>
+                            <div className="space-y-4">
+                                <div className="p-4 rounded-xl border border-zinc-700 bg-zinc-800 flex justify-between items-center">
+                                    <div>
+                                        <div className="font-medium text-white">Reset Analytics</div>
+                                        <div className="text-xs text-zinc-400">Clear visitor and revenue stats</div>
+                                    </div>
+                                    <Button variant="outline" className="text-red-400 border-red-500/20 hover:bg-red-500/10 hover:text-red-300">Reset</Button>
+                                </div>
+                                <div className="p-4 rounded-xl border border-zinc-700 bg-zinc-800 flex justify-between items-center">
+                                    <div>
+                                        <div className="font-medium text-white">Export All Data</div>
+                                        <div className="text-xs text-zinc-400">Download full CSV report</div>
+                                    </div>
+                                    <Button variant="outline" className="text-blue-400 border-blue-500/20 hover:bg-blue-500/10 hover:text-blue-300">Export</Button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold text-white mb-4">Security</h4>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-zinc-400">New Password</label>
+                                    <Input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-primary"
+                                    />
+                                </div>
+                                <Button className="w-full font-bold" variant="secondary">Update Password</Button>
+                            </div>
                         </div>
                     </div>
                 </div>

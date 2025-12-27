@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, AlertCircle, QrCode } from "lucide-react";
+import { ArrowLeft, AlertCircle, QrCode, ShieldCheck, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import QRCode from "qrcode";
@@ -69,6 +69,13 @@ const Payment = () => {
 
         {/* Main Card */}
         <div className="glass-card rounded-3xl p-8 md:p-12 shadow-medium">
+
+          {/* Security Banner */}
+          <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-3 mb-8 flex items-center justify-center gap-2">
+            <Lock className="w-4 h-4 text-green-500" />
+            <span className="text-sm font-semibold text-green-500 uppercase tracking-wide">100% Secure & Anonymous Payment</span>
+          </div>
+
           {/* Order Summary */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Complete Payment</h1>
@@ -145,6 +152,17 @@ const Payment = () => {
             <p className="text-sm text-muted-foreground">
               Use any UPI app to scan and complete payment
             </p>
+          </div>
+
+          <div className="flex justify-center gap-6 mb-8 opacity-70 grayscale">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+              <span className="text-xs font-bold">SSL Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">⚡</span>
+              <span className="text-xs font-bold">Instant Access</span>
+            </div>
           </div>
 
           {/* Guidelines */}

@@ -4,22 +4,23 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { initializeChats, formatTimeAgo, ChatMessage } from "@/lib/chatUtils";
+import { getReviews, Review } from "@/lib/reviewUtils";
 import videoCallBg from "../components/SaveClip.App_559453078_17894459628335791_1669631404230936057_n.jpg";
 import recordedBg from "../components/SaveClip.App_590889507_17900658735335791_6705053405610076337_n.jpg";
+import FAQSection from "@/components/FAQSection";
 
 const Index = () => {
   // Yeh home page ka main component hai
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userPhone, setUserPhone] = useState("");
+  // Yeh home page ka main component hai
   const [chats, setChats] = useState<ChatMessage[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleGroupAccess = () => {
+  const proceedToPayment = () => {
     setIsLoading(true);
 
     // Simulate secure connection/loading delay
@@ -35,7 +36,7 @@ const Index = () => {
           details: "WhatsApp • 1 Month Validity • 30 Photos & 3 Videos Daily"
         }
       });
-    }, 3000);
+    }, 1500); // Reduced delay slightly
   };
 
   useEffect(() => {
@@ -43,17 +44,18 @@ const Index = () => {
     const currentVisitors = parseInt(localStorage.getItem("anushka_visitors") || "0");
     localStorage.setItem("anushka_visitors", (currentVisitors + 1).toString());
 
-    // Check agar user pehle se registered hai
-    const existingUser = localStorage.getItem("anushka_user");
-    if (!existingUser) {
-      setShowOnboarding(true);
-    }
+    localStorage.setItem("anushka_visitors", (currentVisitors + 1).toString());
+
+
 
     // Initialize Chats
     const loadedChats = initializeChats();
     setChats(loadedChats);
 
-    // Check for updates every minute (handles the 4-hour gap logic)
+    // Initialize Reviews
+    setReviews(getReviews());
+
+    // Sync chats every minute
     const interval = setInterval(() => {
       setChats([...initializeChats()]);
     }, 60000);
@@ -61,20 +63,7 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleOnboarding = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userName && userPhone.length >= 10) {
-      const userData = { name: userName, phone: userPhone, time: new Date().toLocaleString() };
-      localStorage.setItem("anushka_user", JSON.stringify(userData));
 
-      // Admin leads mein bhi save karein
-      const leads = JSON.parse(localStorage.getItem("anushka_leads") || "[]");
-      leads.unshift(userData);
-      localStorage.setItem("anushka_leads", JSON.stringify(leads));
-
-      setShowOnboarding(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background py-10 px-4">
@@ -212,15 +201,15 @@ const Index = () => {
                 </div>
               </div>
               <div className="p-8">
-                <h2 className="text-2xl font-bold mb-3">Live Naughty Call</h2>
+                <h2 className="text-2xl font-bold mb-3">Live Nude Call</h2>
                 <p className="text-muted-foreground mb-6 text-sm">
-                  Full nude, explicit, and teasing sessions. Anushka is waiting to show you everything you desire.
+                  Full nude, explicit, and teasing sessions. I will eat your whole cum my BADDIES.
                 </p>
                 <div className="space-y-2 text-xs text-muted-foreground mb-6 font-medium text-primary/70 italic">
-                  <span>— Stripping, Moaning, & Cumming Included 💦</span>
+                  <span>— Fingering, Moaning, & Cumming Included 💦</span>
                 </div>
                 <Button className="w-full font-bold h-12" size="lg">
-                  Book A Naughty Call Now
+                  Book A Nude Call Now
                 </Button>
               </div>
             </div>
@@ -241,12 +230,12 @@ const Index = () => {
                 </div>
               </div>
               <div className="p-8">
-                <h2 className="text-2xl font-bold mb-3">Recorded Fantasies</h2>
+                <h2 className="text-2xl font-bold mb-3">Recorded Content</h2>
                 <p className="text-muted-foreground mb-6 text-sm">
-                  Watch Anushka in high intensity, super naughty recorded videos. 4K quality with bonus flirty photos.
+                  Watch me in high intensity,nude recorded videos. 4K quality with bonus nude photos.
                 </p>
                 <div className="space-y-2 text-xs text-muted-foreground mb-6 font-medium text-purple-400 italic">
-                  <span>— 40+ Naughty Photos FREE (45 min Plan) 📸</span>
+                  <span>— 40+ Nude Photos FREE (45 min Plan) 📸</span>
                 </div>
                 <Button className="w-full font-bold h-12" size="lg" variant="secondary">
                   Order My Fantasy Video
@@ -262,7 +251,7 @@ const Index = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold mb-4 border border-green-500/20 uppercase tracking-tighter">
               <CheckCircle className="w-3 h-3" /> 100% Real & Verified Photos
             </div>
-            <h2 className="text-3xl font-bold mb-4">Anushka's Private Gallery 📸</h2>
+            <h2 className="text-3xl font-bold mb-4">My Private Gallery 📸</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Check out these real shots of Anushka. No fake profiles, no filters—just 100% pure beauty for your trust.
             </p>
@@ -278,7 +267,7 @@ const Index = () => {
             ].map((url, index) => (
               <div
                 key={index}
-                onClick={handleGroupAccess}
+                onClick={proceedToPayment}
                 className="relative group aspect-[3/4] overflow-hidden rounded-2xl glass-card border border-white/10 cursor-pointer"
               >
                 {/* Image with Blur */}
@@ -323,7 +312,7 @@ const Index = () => {
             </div>
 
             <Button
-              onClick={handleGroupAccess}
+              onClick={proceedToPayment}
               className="rounded-full px-12 h-16 text-xl font-bold shadow-xl shadow-primary/20 animate-pulse w-full max-w-md"
               variant="gradient"
             >
@@ -336,26 +325,29 @@ const Index = () => {
         <div className="mt-20 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-10">Real Client Reviews ⭐</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Rahul K.", rating: 5, text: "sexy ekdum pura maal nikal diya" },
-              { name: "Suresh P.", rating: 5, text: "Video quality ekdum top notch hai. Sab kuch ekdum private aur secure rehta hai." },
-              { name: "Vikram M.", rating: 5, text: "Recorded videos ki quality real 4K hai. Paisa vasool!" },
-              { name: "Ankit S.", rating: 5, text: "Bhai log, Anushka real hai aur bahut hi acchha cum karati hai" },
-              { name: "Deepak J.", rating: 5, text: "Payment smoothly ho gaya aur 5 min ke andar call connect ho gayi." },
-              { name: "Sameer T.", rating: 5, text: "Anushka ne bahut maza dilaya. one day i will fuck you" }
-            ].map((review, i) => (
+            {reviews.map((review, i) => (
               <div key={i} className="glass-card p-6 rounded-2xl border border-border/50 hover:bg-secondary/20 transition-colors">
-                <div className="flex items-center gap-1 mb-3">
-                  {[...Array(review.rating)].map((_, j) => (
-                    <span key={j} className="text-yellow-500 text-sm">★</span>
-                  ))}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-1">
+                    {[...Array(review.rating)].map((_, j) => (
+                      <span key={j} className="text-yellow-500 text-sm">★</span>
+                    ))}
+                  </div>
                 </div>
                 <p className="text-sm italic text-muted-foreground mb-4">"{review.text}"</p>
-                <div className="text-xs font-bold text-primary">— {review.name}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold text-primary">— {review.name}</div>
+                  <div className="flex items-center gap-1 text-[9px] text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+                    <CheckCircle className="w-2.5 h-2.5" /> Verified
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* FAQ Section */}
+        <FAQSection />
 
 
 
@@ -383,51 +375,8 @@ const Index = () => {
       </div>
 
       {/* Entry Onboarding Modal */}
-      {showOnboarding && (
-        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in overflow-y-auto">
-          <div className="glass-card w-full max-w-md p-8 rounded-[2rem] border border-primary/30 shadow-[0_0_80px_rgba(234,56,76,0.3)] my-auto">
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                <Users className="w-10 h-10 text-primary" />
-              </div>
-              <h2 className="text-3xl font-bold mb-2">Before We Begin 💋</h2>
-              <p className="text-muted-foreground text-sm px-4">Please verify your details below to join Anushka's private sessions.</p>
-            </div>
 
-            <form onSubmit={handleOnboarding} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-primary ml-1">Your Name</label>
-                <Input
-                  required
-                  placeholder="Enter your name..."
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="h-14 bg-white/5 border-primary/20 rounded-2xl focus:border-primary text-lg px-6"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-primary ml-1">Phone (WhatsApp Only)</label>
-                <Input
-                  required
-                  type="tel"
-                  placeholder="98xxxxxx00"
-                  value={userPhone}
-                  onChange={(e) => setUserPhone(e.target.value)}
-                  className="h-14 bg-white/5 border-primary/20 rounded-2xl focus:border-primary text-lg px-6 font-mono"
-                />
-              </div>
-              <div className="pt-6">
-                <Button type="submit" className="w-full h-16 text-xl font-bold shadow-lg shadow-primary/20" variant="gradient">
-                  Enter Now 🚀
-                </Button>
-              </div>
-              <p className="text-[10px] text-center text-muted-foreground/60 px-6 leading-relaxed">
-                *Privacy Guarantee: Hum aapki details kisi ko share nahi karte. Yeh sirf connection banaye rakhne ke liye hai.
-              </p>
-            </form>
-          </div>
-        </div>
-      )}
+
       {/* Floating Chat Widget */}
       {/* Trigger Button */}
       <button
@@ -469,7 +418,8 @@ const Index = () => {
             <div className="h-2"></div>
 
             {/* We use flex-col-reverse so the first item (Newest/Index 0) is at the bottom. We map chats directly (Newest...Oldest). */}
-            {chats.map((chat) => (
+            {/* Limit effectively to 10 visible messages */}
+            {chats.slice(0, 10).map((chat) => (
               <div key={chat.id} className={`flex flex-col gap-1 text-sm animate-fade-in ${chat.user === 'Admin' ? 'items-end' : 'items-start'}`}>
                 {/* Sender Name */}
                 <div className="px-1">
@@ -484,12 +434,19 @@ const Index = () => {
                   : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
                   }`}>
                   <p className="leading-snug text-[13px]">{chat.message}</p>
-                  <p className={`text-[9px] mt-1 text-right flex items-center justify-end gap-1 ${chat.user === 'Admin' ? 'text-white/80' : 'text-gray-400'}`}>
-                    {formatTimeAgo(chat.timestamp)}
-                  </p>
                 </div>
               </div>
             ))}
+
+            {/* Subscription/Paywall Notice for older messages */}
+            {chats.length > 10 && (
+              <div className="text-center py-4 bg-white/50 backdrop-blur-sm rounded-xl border border-gray-100 mx-2 my-2">
+                <Lock className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-[10px] text-gray-500 font-medium">
+                  Subscribe to view full chat history
+                </p>
+              </div>
+            )}
 
             <div className="text-center text-[10px] text-gray-400 my-6 relative">
               <span className="bg-[#F2F4F7] px-3 py-1 relative z-10 rounded-full font-medium">Today</span>
@@ -509,7 +466,7 @@ const Index = () => {
                 <Send className="w-4 h-4 text-primary" />
               </button>
               <div
-                onClick={handleGroupAccess}
+                onClick={proceedToPayment}
                 className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-full opacity-100 cursor-pointer group hover:bg-white/40 transition-all duration-300"
               >
                 <span className="text-[10px] font-bold text-white bg-primary px-4 py-2 rounded-full shadow-lg border border-primary/20 transform hover:scale-110 transition-transform animate-pulse flex items-center gap-2">

@@ -234,6 +234,7 @@ const VideoCall = () => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };
