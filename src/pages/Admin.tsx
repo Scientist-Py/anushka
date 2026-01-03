@@ -12,7 +12,9 @@ import {
     ArrowUpRight,
     TrendingUp,
     MessageSquare,
-    Send
+    Send,
+    Bell,
+    Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +31,7 @@ import {
 } from "recharts";
 import { getChats, addChat, formatTimeAgo, ChatMessage } from "@/lib/chatUtils";
 import { getReviews, addReview, Review } from "@/lib/reviewUtils";
+import { getNotification, setNotification, clearNotification, Notification } from "@/lib/notificationUtils";
 
 const Admin = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,6 +57,14 @@ const Admin = () => {
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
 
+    // Notification State
+    const [notificationMsg, setNotificationMsg] = useState("");
+    const [notificationTitle, setNotificationTitle] = useState("");
+    const [notificationType, setNotificationType] = useState<"info" | "success" | "alert" | "promo">("info");
+    const [notificationBtnText, setNotificationBtnText] = useState("");
+    const [notificationLink, setNotificationLink] = useState("");
+    const [currentNotification, setCurrentNotification] = useState<Notification | null>(null);
+
     useEffect(() => {
         // Read real stats from localStorage
         const savedLeads = JSON.parse(localStorage.getItem("anushka_leads") || "[]");
@@ -65,7 +76,32 @@ const Admin = () => {
         setRevenue(savedRevenue);
         setChats(getChats());
         setReviews(getReviews());
+        setCurrentNotification(getNotification());
     }, []);
+
+    const handleSetNotification = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!notificationMsg) return;
+        const note = setNotification({
+            title: notificationTitle,
+            message: notificationMsg,
+            type: notificationType,
+            buttonText: notificationBtnText,
+            link: notificationLink
+        });
+        setCurrentNotification(note);
+        // We keep the form filled so they can edit it easily
+    };
+
+    const handleDeleteNotification = () => {
+        clearNotification();
+        setCurrentNotification(null);
+        setNotificationMsg("");
+        setNotificationTitle("");
+        setNotificationLink("");
+        setNotificationBtnText("");
+        setNotificationType("info");
+    };
 
     const handlePostChat = (e: React.FormEvent) => {
         e.preventDefault();
@@ -184,6 +220,9 @@ const Admin = () => {
                     </Button>
                     <Button onClick={() => scrollToSection('settings')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <Settings className="w-5 h-5" /> Settings
+                    </Button>
+                    <Button onClick={() => scrollToSection('notification-control')} variant="ghost" className="w-full justify-start gap-3 text-zinc-400 hover:text-white hover:bg-zinc-800">
+                        <Bell className="w-5 h-5" /> Notifications
                     </Button>
                 </nav>
                 <Button onClick={handleLogout} variant="ghost" className="justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 mb-4">
@@ -483,6 +522,131 @@ const Admin = () => {
                                     <p className="text-zinc-300 text-sm italic">"{review.text}"</p>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Notification Management Section */}
+                <div id="notification-control" className="mb-20">
+                    <div className="glass-card rounded-3xl border border-zinc-800 p-8 bg-zinc-900">
+                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white"><Bell className="text-primary" /> Notification Management</h3>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Set Notification */}
+                            <div>
+                                <h4 className="font-bold text-white mb-4">Set Active Notification</h4>
+                                <form onSubmit={handleSetNotification} className="space-y-4">
+                                    {/* Type Selection */}
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium ml-1 text-zinc-400">Notification Type</label>
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {(['info', 'success', 'alert', 'promo'] as const).map((type) => (
+                                                <button
+                                                    key={type}
+                                                    type="button"
+                                                    onClick={() => setNotificationType(type)}
+                                                    className={`h-10 rounded-lg text-xs font-bold uppercase transition-all ${notificationType === type
+                                                        ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105'
+                                                        : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700'
+                                                        }`}
+                                                >
+                                                    {type}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium ml-1 text-zinc-400">Title</label>
+                                            <input
+                                                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white placeholder:text-zinc-500 focus:border-primary focus:outline-none"
+                                                placeholder="e.g. New Update"
+                                                value={notificationTitle}
+                                                onChange={(e) => setNotificationTitle(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium ml-1 text-zinc-400">Action Link (Optional)</label>
+                                            <input
+                                                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white placeholder:text-zinc-500 focus:border-primary focus:outline-none"
+                                                placeholder="e.g. /video-call"
+                                                value={notificationLink}
+                                                onChange={(e) => setNotificationLink(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium ml-1 text-zinc-400">Messages</label>
+                                        <textarea
+                                            className="w-full h-24 bg-zinc-800 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:border-primary focus:outline-none resize-none text-base"
+                                            placeholder="Enter the message to show in the popup..."
+                                            value={notificationMsg}
+                                            onChange={(e) => setNotificationMsg(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium ml-1 text-zinc-400">Button Text</label>
+                                        <input
+                                            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white placeholder:text-zinc-500 focus:border-primary focus:outline-none"
+                                            placeholder="e.g. Check it out"
+                                            value={notificationBtnText}
+                                            onChange={(e) => setNotificationBtnText(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" variant="gradient">
+                                        {currentNotification?.active ? 'Update Notification' : 'Set Notification'}
+                                    </Button>
+                                </form>
+                            </div>
+
+                            {/* Current Status */}
+                            <div>
+                                <h4 className="font-bold text-white mb-4">Preview Status</h4>
+                                <div className="p-6 rounded-2xl border border-zinc-700 bg-zinc-800/50 h-full flex flex-col justify-center items-center text-center">
+                                    {currentNotification && currentNotification.active ? (
+                                        <div className="w-full">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse ${currentNotification.type === 'alert' ? 'bg-red-500/20 text-red-500' :
+                                                    currentNotification.type === 'success' ? 'bg-green-500/20 text-green-500' :
+                                                        currentNotification.type === 'promo' ? 'bg-yellow-500/20 text-yellow-500' :
+                                                            'bg-primary/20 text-primary'
+                                                }`}>
+                                                <Bell className="w-6 h-6" />
+                                            </div>
+                                            <div className="font-bold mb-2 uppercase tracking-wider text-sm" style={{
+                                                color: currentNotification.type === 'alert' ? '#ef4444' :
+                                                    currentNotification.type === 'success' ? '#22c55e' :
+                                                        currentNotification.type === 'promo' ? '#eab308' : '#ea384c'
+                                            }}>ACTIVE: {currentNotification.type}</div>
+
+                                            <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-2xl mb-6 text-zinc-200 shadow-inner">
+                                                <h5 className="font-bold text-white mb-2">{currentNotification.title || "No Title"}</h5>
+                                                <p className="text-sm text-zinc-400 mb-4">"{currentNotification.message}"</p>
+                                                <span className="inline-block px-4 py-2 rounded-lg bg-zinc-800 text-xs font-bold border border-zinc-700">
+                                                    Btn: {currentNotification.buttonText || "Default"}
+                                                </span>
+                                            </div>
+
+                                            <Button
+                                                onClick={handleDeleteNotification}
+                                                variant="outline"
+                                                className="w-full text-red-400 border-red-500/30 hover:bg-red-500/10 hover:text-red-300 gap-2"
+                                            >
+                                                <Trash2 className="w-4 h-4" /> Delete Notification
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="text-zinc-500">
+                                            <Bell className="w-16 h-16 mx-auto mb-6 opacity-10" />
+                                            <p className="text-lg font-medium">No active notification.</p>
+                                            <p className="text-sm opacity-50">Set one to show the popup on the website.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

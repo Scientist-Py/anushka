@@ -8,6 +8,7 @@ import { getReviews, Review } from "@/lib/reviewUtils";
 import videoCallBg from "../components/SaveClip.App_559453078_17894459628335791_1669631404230936057_n.jpg";
 import recordedBg from "../components/SaveClip.App_590889507_17900658735335791_6705053405610076337_n.jpg";
 import FAQSection from "@/components/FAQSection";
+import NotificationModal from "@/components/NotificationModal";
 
 const Index = () => {
   // Yeh home page ka main component hai
@@ -67,6 +68,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background py-10 px-4">
+      {/* Admin Notification Popup */}
+      <NotificationModal />
+
       {/* Global Loading Overlay */}
       {isLoading && (
         <div className="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center backdrop-blur-xl animate-fade-in">
